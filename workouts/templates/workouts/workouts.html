@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}
+User Workouts
+{% endblock title %}
+{% block content %}
+    <div class="container flex-center">
+        <h1>Add stuff</h1>
+        <a class="btn btn-info" href={% url 'add_workout' %}>Add a workout</a>
+        <a class="btn btn-info" href={% url 'add_type' %}>Add a type</a>
+        <a class="btn btn-info" href={% url 'add_tag' %}>Add a tag</a>
+        <a class="btn btn-info" href={% url 'add_exercise' %}>Add an exercise</a>
+        <h1>Workouts</h1>
+            {% for workout in workouts %}
+                <p>Workout: {{workout}}</p>
+            {% endfor %} 
+        <h2>Types</h2>
+            {% for type in types %}
+                <p>Type: {{type}}</p>
+            {% endfor %} 
+        <h2>Exercises</h2>
+            {% for exercise in exercises %}
+                <p>Exercise: {{exercise}}</p>
+            {% endfor %} 
+        <h2>Tags</h2>
+            {% for tag in tags %}
+                <p>Tag: {{tag}}</p>
+            {% endfor %} 
+        </div>
+{% endblock content %}

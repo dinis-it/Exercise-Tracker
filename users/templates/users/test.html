@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}
+Test
+{% endblock title %}
+{% block content %}
+    <h1>
+        HI THIS A TEST DON'T PANIC
+    </h1>
+        {% for workout in workouts %}
+            <h4>Profile: {{workout.profile}}</h4>
+            <p>Workout: {{workout}}</p>
+        {% endfor %} 
+{% endblock content %}
+
