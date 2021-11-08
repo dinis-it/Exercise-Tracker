@@ -43,7 +43,8 @@ INSTALLED_APPS = [
 
     # 3rd Party Apps
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'django_htmx',
 
 ]
 
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'exercise.urls'
@@ -147,7 +149,8 @@ MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
 # REDIRECTS
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'workouts'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Messages

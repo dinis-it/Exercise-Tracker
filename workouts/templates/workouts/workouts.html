@@ -5,13 +5,26 @@ User Workouts
 {% block content %}
     <div class="container flex-center">
         <h1>Add stuff</h1>
-        <a class="btn btn-info" href={% url 'add_workout' %}>Add a workout</a>
-        <a class="btn btn-info" href={% url 'add_type' %}>Add a type</a>
-        <a class="btn btn-info" href={% url 'add_tag' %}>Add a tag</a>
-        <a class="btn btn-info" href={% url 'add_exercise' %}>Add an exercise</a>
+        <a class="btn btn-info" href={% url 'add-workout' %}>Add a workout</a>
+        <a class="btn btn-info" href={% url 'add-type' %}>Add a type</a>
+        <a class="btn btn-info" href={% url 'add-tag' %}>Add a tag</a>
+        <a class="btn btn-info" href={% url 'add-exercise' %}>Add an exercise</a>
         <h1>Workouts</h1>
             {% for workout in workouts %}
-                <p>Workout: {{workout}}</p>
+                <ul>
+                    <li><p>Workout: <a href="{{workout.get_absolute_url}}"> {{workout}}</a></p></li>
+                    <ul>
+                        {% for exercise in workout.exercises.all %}
+                            <li>{{exercise.exercise}}</li>
+                            <li>{{exercise.weight}}</li>
+                            <ul>
+                                {% for set in exercise.sets.all %}
+                                    <li>{{set}}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    </ul>
+                </ul>
             {% endfor %} 
         <h2>Types</h2>
             {% for type in types %}

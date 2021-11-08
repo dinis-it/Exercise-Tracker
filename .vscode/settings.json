@@ -5,5 +5,6 @@
     "**/templates/**/*": "django-txt",
     "**/requirements{/**,*}.{txt,in}": "pip-requirements"
   },
-  "prettier.enable": false
+  "prettier.enable": false,
+  "python.defaultInterpreterPath": "C:\\Users\\pedro\\miniconda3\\envs\\django\\python.exe",
 }

@@ -10,9 +10,6 @@ from .models import (
 )
 
 
-InstanceFormset = inlineformset_factory()
-
-
 class WorkoutForm(ModelForm):
 
     class Meta:
@@ -31,7 +28,7 @@ class SetForm(ModelForm):
 
     class Meta:
         model = Set
-        fields = '__all__'
+        exclude=['exercise']
 
 
 class InstanceForm(ModelForm):
@@ -53,3 +50,11 @@ class TypeForm(ModelForm):
     class Meta:
         model = WorkoutType
         fields = ['name']
+
+
+InstanceFormset = inlineformset_factory(
+    Workout, ExerciseInstance, form=InstanceForm, extra=1)
+
+SetFormset = inlineformset_factory(
+    ExerciseInstance, Set, form=SetForm
+)

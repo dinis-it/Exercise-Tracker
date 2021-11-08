@@ -2,10 +2,12 @@
 {% load crispy_forms_tags %} 
 {% block title %}Update Profile{% endblock title %}
 {% block content %}
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{user_form|crispy}}
-    {{profile_form|crispy}}
-    <button class="btn">Update</button>
-</form>
+<div class="container">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{user_form|crispy}}
+        {{profile_form|crispy}}
+        <button class="btn">Update</button>
+    </form>
+</div>
 {% endblock content %}

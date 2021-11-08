@@ -1,0 +1,11 @@
+{% if exercises %}
+    {% for exercise in exercises %}
+        <div id="exercise{{exercise.id}}" class="d-flex">
+            <p>{{exercise}}</p>
+            <button class="btn btn-info mx-2" hx-get={% url 'edit-instance' pk=exercise.pk %} hx-swap="afterend" hx-target="#exercise{{exercise.id}}">Edit</button>
+            <button class="btn btn-danger mx-2" hx-delete={% url 'delete-instance' pk=exercise.pk %} hx-swap="outerHTML" hx-target="#exercise{{exercise.id}}">X</button>
+        </div>
+    {% endfor %}
+{% else %}
+    <h3> Workout is empty</h3>
+{% endif %}

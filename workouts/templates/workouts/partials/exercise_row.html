@@ -1,0 +1,7 @@
+<div id="exercise{{exercise.id}}" class="d-flex">
+
+    <p>{{exercise}}</p>
+    <button class="btn btn-sm btn-info mx-2 reload" hx-post={% url 'edit-instance' pk=exercise.pk %} hx-swap="outerHTML" hx-target="#exercise{{exercise.id}}">Edit</button>
+    <button class="btn btn-sm btn-danger mx-2 reload" hx-delete={% url 'delete-instance' pk=exercise.pk %} hx-swap="outerHTML" hx-target="#exercise{{exercise.id}}">X</button>
+
+</div>

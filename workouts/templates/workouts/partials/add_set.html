@@ -1,0 +1,7 @@
+{% load crispy_forms_tags %}
+
+<form action="post">
+    {% csrf_token %}
+    {{form|crispy}}
+    <button class="btn btn-info" hx-post={% url 'add-set' pk=exercise.id %}>Submit</button>
+</form>
