@@ -3,40 +3,55 @@
 User Workouts
 {% endblock title %}
 {% block content %}
-    <div class="container flex-center">
-        <h1>Add stuff</h1>
-        <a class="btn btn-info" href={% url 'add-workout' %}>Add a workout</a>
-        <a class="btn btn-info" href={% url 'add-type' %}>Add a type</a>
-        <a class="btn btn-info" href={% url 'add-tag' %}>Add a tag</a>
-        <a class="btn btn-info" href={% url 'add-exercise' %}>Add an exercise</a>
-        <h1>Workouts</h1>
-            {% for workout in workouts %}
-                <ul>
-                    <li><p>Workout: <a href="{{workout.get_absolute_url}}"> {{workout}}</a></p></li>
-                    <ul>
-                        {% for exercise in workout.exercises.all %}
-                            <li>{{exercise.exercise}}</li>
-                            <li>{{exercise.weight}}</li>
-                            <ul>
-                                {% for set in exercise.sets.all %}
-                                    <li>{{set}}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endfor %}
-                    </ul>
-                </ul>
-            {% endfor %} 
-        <h2>Types</h2>
-            {% for type in types %}
-                <p>Type: {{type}}</p>
-            {% endfor %} 
-        <h2>Exercises</h2>
-            {% for exercise in exercises %}
-                <p>Exercise: {{exercise}}</p>
-            {% endfor %} 
-        <h2>Tags</h2>
-            {% for tag in tags %}
-                <p>Tag: {{tag}}</p>
-            {% endfor %} 
-        </div>
+
+<div class="container flex-center bg-primary">
+
+    <form>
+        <input type="text" id="input" class="form-control" name='search' hx-trigger="keyup, delay:500ms" hx-swap="innerHTML" hx-target="#search-list" hx-post={% url 'search-workout' %}>
+    </form>
+
+    <form method="post">
+    {% csrf_token %}
+        <button class="btn btn-primary my-2 border rounded" type="submit">New Workout</button>
+    </form>
+
+    <div id="search-list"></div>
+    
+    <br>
+    <br>
+    <br>
+    {% comment %} {% include 'workouts/partials/workout_list.html' %} {% endcomment %}
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <div style="background:red;">
+        <form action="">
+            {{form.as_p}}
+        </form>
+    </div>
+
+
+    <h2>Types</h2>
+        {% for type in types %}
+            <p>Type: {{type}}</p>
+        {% endfor %} 
+    <h2>Exercises</h2>
+        {% for exercise in exercises %}
+            <p>Exercise: {{exercise}}</p>
+        {% endfor %} 
+    <h2>Tags</h2>
+        {% for tag in tags %}
+            <p>Tag: {{tag}}</p>
+        {% endfor %} 
+
+
+</div>
+
+<style>
+    .container{
+        min-height: 1vh;
+    }
+</style>
 {% endblock content %}

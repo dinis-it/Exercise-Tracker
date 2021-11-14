@@ -1,25 +1,29 @@
-<div class="container">
-    <div class="navbar-nav">
-        <ul class="nav nav-justified nav-tabs">
+<div class="container p-0">
+    <nav class="navbar-nav navbar-dark bg-dark navbar-expand">
+        <ul class="nav nav-justified ">
+            <li class="nav-item ">
+                <a href="{% url 'home' %}" class="nav-link navbar-dark ">Home</a>
+            </li>
             <li class="nav-item">
-                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                    <a class="nav-link" href="{% url 'workouts' %}" role="button" id="Workouts" >
+                        Workouts
+                    </a>
             </li>
             <li class="nav-item">
                 <div class="dropdown show">
-                    <a class="dropdown-toggle nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="dropdown-toggle nav-link" href="#" role="button" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Profile
                     </a>
 
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-menu w-100" aria-labelledby="dropdownProfile">
                         <a href="{% url 'profile' %}" class="dropdown-item">View Profile</a>
-                        <a class="dropdown-item" href="{% url 'update-password' %}">Update Password</a>
                         <a class="dropdown-item" href="{% url 'update-profile' %}">Update Profile</a>
+                        <a class="dropdown-item" href="{% url 'update-password' %}">Update Password</a>
+                        <a class="dropdown-item" href={% url 'logout' %}>Log Out</a>
                     </div>
                 </div>
             </li>
-            <li class="nav-item">
-                <a href="{% url 'workouts' %}" class="nav-link">Workouts</a>
-            </li>
+
         </ul>
-    </div>
+    </nav>
 </div>

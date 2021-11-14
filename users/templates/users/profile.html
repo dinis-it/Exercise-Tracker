@@ -2,22 +2,42 @@
 {% load static %}
 {% block title %}{{user.username}}'s Profile{% endblock title %}
 {% block content %}
-    <div class="container">
-        <div class="profile-content">
-            <h1>User:</h1> <h3>{{user.username}}</h3>
-            <img class="" src="{{profile.profile_picture.url}}"</img>
-            <h3>Email: {{user.email}}</h3>
-            <h3>First Name: {{user.first_name}}</h3>
-            <h3>Last Name: {{user.last_name}}</h3>
-            <h3>Age: {% if profile.age %} {{profile.age}}{% endif %}</h3>
-            <h3>Height: {% if profile.height %} {{profile.height}} cm {% endif %}</h3>
-            <h3>Weight: {% if profile.weight %} {{profile.weight}} kg {% endif %}</h3>
+    <div class="container d-flex">
+        <div class="row container pb-4 bg-primary text-white">
+            <div class="col-8">
+                <div class="px-2 profile-content">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <h1 class="fw-bold">Profile:</h1> 
+                        <h2 class="ms-3 fw-bold">{{user.username}}</h2>
+                    </div>
+                    <div class="row">
+                        <div class="">
+                            <img class="img-fluid float-left" src="{{profile.profile_picture.url}}"</img>
+  
+                            <h3 class="fw-bold">Email: {{user.email}}</h3>
+                            <h3 class="fw-bold">First Name: {% if user.first_name %} {{user.first_name}} {% endif %}</h3>
+                            <h3 class="fw-bold">Last Name: {% if user.last_name %} {{user.last_name}} {% endif %}</h3>
+                            <h3 class="fw-bold">Age: {% if profile.age %} {{profile.age}}{% endif %}</h3>
+                            <h3 class="fw-bold">Height: {% if profile.height %} {{profile.height}} cm {% endif %}</h3>
+                            <h3 class="fw-bold">Weight: {% if profile.weight %} {{profile.weight}} kg {% endif %}</h3>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Porro illum repudiandae aliquam, sunt natus consequatur rem! Illum eos libero saepe dolorum doloremque ipsa quo dolore esse excepturi a sit neque minima laboriosam hic accusamus animi iste, quos perferendis fugiat dignissimos enim voluptas inventore? Eos vel, accusantium dolorum et mollitia magnam.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+            <div class="col-4 container bg-secondary text-dark mb-0">
+                <div class="profile-workouts d-flex flex-column">
+                    <h1 class="fw-bold">Latest Workouts</h1>
+                    {% for workout in workouts %}
+                        <a class="h" href={{workout.get_absolute_url}}>
+                            {% for exercise in workout %}
 
-        <div class="profile-workouts">
-            {% for workout in workouts %}
-                <h3>{{workout}}</h3>
-            {% endfor %}
+                            {% endfor %}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock content %}

@@ -1,4 +1,6 @@
+from django import forms
 from django.forms import ModelForm
+from django.forms.forms import Form
 from django.forms.models import inlineformset_factory
 from .models import (
     ExerciseInstance,
@@ -28,7 +30,7 @@ class SetForm(ModelForm):
 
     class Meta:
         model = Set
-        exclude=['exercise']
+        exclude = ['instance']
 
 
 class InstanceForm(ModelForm):
@@ -52,9 +54,12 @@ class TypeForm(ModelForm):
         fields = ['name']
 
 
-InstanceFormset = inlineformset_factory(
-    Workout, ExerciseInstance, form=InstanceForm, extra=1)
+""" class TextSearchForm(Form):
+    text = forms.CharField(widget=forms.TextInput(attrs={
+        "type": text
+    }))
+ """
 
-SetFormset = inlineformset_factory(
-    ExerciseInstance, Set, form=SetForm
-)
+
+class DateTimeForm(Form):
+    datetime = forms.DateTimeInput()

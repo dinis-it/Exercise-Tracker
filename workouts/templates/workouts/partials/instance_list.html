@@ -1,11 +1,45 @@
 {% if exercises %}
-    {% for exercise in exercises %}
-        <div id="exercise{{exercise.id}}" class="d-flex">
-            <p>{{exercise}}</p>
-            <button class="btn btn-info mx-2" hx-get={% url 'edit-instance' pk=exercise.pk %} hx-swap="afterend" hx-target="#exercise{{exercise.id}}">Edit</button>
-            <button class="btn btn-danger mx-2" hx-delete={% url 'delete-instance' pk=exercise.pk %} hx-swap="outerHTML" hx-target="#exercise{{exercise.id}}">X</button>
-        </div>
-    {% endfor %}
-{% else %}
-    <h3> Workout is empty</h3>
+    <div class="list-group">
+        {% for exercise in exercises %}
+            <div id="exercises-edit" class="list-group-item d-flex align-items-center w-100 row border-bottom border-dark border-3 bg-info py-0 ms-0">
+                <div class="col d-flex align-items-center justify-content-between">
+                    <div class="col">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col">
+                                <h5 id="exercise" class="h5 col mb-0"><strong>{{exercise.exercise}}</strong></h5>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="h5"><strong>Weight:</strong> <span id="weight" class="text-white">{% if exercise.weight %}{{ exercise.weight }} kg{% endif %}</span></h5>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="h5"><strong>Duration:</strong> <span id="duration" class="text-white">{% if exercise.duration %}{{ exercise.duration }} min{% endif %}</span></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row"> 
+                        <div class="col">  
+                            <p class="h5"><strong>Sets:</strong> <span id="sets" class="text-white">{{ exercise.format_sets }}</span></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="h5"><strong>Comments:</strong> <span id="comments" class="text-white">{{ exercise.comments }}</span></p>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" hx-get={% url 'edit-instance' pk=exercise.pk%} hx-target="#instance-form">Edit</button>
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
+
+

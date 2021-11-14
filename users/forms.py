@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from users.models import BaseUser, Profile
+from users.models import BaseUser, Profile, Weight
 from django import forms
 
 # Users
@@ -28,4 +28,10 @@ class ProfileUpdateForm(ModelForm):
 
     class Meta:
         model = Profile
+        exclude = ['user']
+
+class WeightForm(ModelForm):
+    
+    class Meta:
+        model=Weight
         exclude = ['user']

@@ -1,23 +1,20 @@
 {\rtf1}
 
-- create container for each model list
-- create partial CRUD for every model
-- re-render relevant list when something changes
-- use regular forms or formsets, probably forms.
-- include add-child button in the rendered html where relevant
+- create container for each model list (wtf am I talking about)
+- create partial CRUD for every model (instance and sets almost done)
+- re-render relevant list when something changes (workouts:done. Missing: tags,types,
 
-plan B: javascript
+-no javascript except for graphs
 
 
 Database:
-- make each set its own thing, with comment?
 - check what needs its own model vs fixed choices
+    - check viability for exercise weight charts
 
 Users:
 - view profile
-    - archiveindexview?
     - sidebar (last workouts)
-        - decide what to display
+        - display smaller versions of workout pane
     - PRs?
     - Goals?
 - recover account
@@ -28,33 +25,35 @@ Users:
 
 Workout:
  - add workout
-    - add sets, reps when applicable 
-    - set time manually
     - timer(js?)
     - total reps, total volume
     - add type
     - add tag
 - workout history page (pagination)
+- ditch the modals for inline?
+- search workout by type
+- search exercises by tag
+- turn
 
 Nav:
-    - dropdowns
+    - dropdowns (kinda done, decide what to put in dropdowns)
+    - maybe change to navbar
 
 Misc:
 - messages
 - nav
 - footer
 - tests?
-- weight(t) graph, exercise(t) graphs
+- weight(t) graph (in progress), exercise(t) graphs
 
 Style:
-- BOOTSTRAP
 - add classes
 - forms
 - profile
 - nav
 - footer
 - workout
-- workout list
+- workout list (almost)
 
 
 
@@ -63,4 +62,4 @@ Style:
 
 htmx
 - use swap with target to decide where the response goes
--point to list?
+- point to list?

@@ -1,6 +1,6 @@
 
-from django.http.response import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.http.response import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_list_or_404, redirect
 from django.urls import reverse_lazy
 
 from django.views.generic.base import TemplateView
@@ -14,8 +14,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 
 from users.forms import ProfileUpdateForm, RegistrationForm, UserUpdateForm
-from users.models import BaseUser
+from users.models import BaseUser, Weight
 from workouts.models import Workout
+
+
+def get_weight_data(request):
+    weights = get_list_or_404(Weight)
+
+    return JsonResponse()
+
+
+class WeightChart(TemplateView):
+    template_name = "users/weight_chart.html"
 
 
 class UpdatePassword(LoginRequiredMixin, UpdateView):

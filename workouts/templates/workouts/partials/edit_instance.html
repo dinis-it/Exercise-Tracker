@@ -1,14 +1,4 @@
 {% load crispy_forms_tags %}
-{% comment %} <div id="edit-instance" class=''hx-trigger="from:#edit-instance" hx-target="this" hx-swap="outerHTML" hx-get={% url "edit-instance"  pk=exercise.pk %}>
-        <form method="POST">
-                {% csrf_token %}
-                {{form|crispy}}
-                <button id="edit-instance" class="btn btn-info" hx-post={% url 'edit-instance' pk=exercise.pk %}>Confirm</button>
-        </form>
-
-</div
- {% endcomment %}
-
 
 <div id="modal" class="" hx-trigger="from:#edit-instance" hx-target="this" hx-swap="outerHTML" hx-get={% url 'edit-instance' pk=exercise.pk %}>
 
@@ -17,28 +7,35 @@
         <div id="modalCreate" class="modal fade show" data-backdrop="false" tabindex="-1" style="display:block;">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header"> 
-                        <h5 class="modal-title" id="modalBasicLabel">Edit Exercise</h5>
-                            <button type="button" class="btn btn-close" onClick="closeModal()" aria-label="Close"></button>
+
+                    <div class="modal-header bg-primary"> 
+                        <h3 class="modal-title text-white fw-bold" id="modalBasicLabel">Edit Exercise</h3>
+                        <i class="bi bi-x-square-fill red-icon-big me-3 pb-5" type="button" onClick="closeModal()" aria-label="Close"></i>
                     </div>
 
-                    <div class="modal-body">    
-
-                        <form method="post" id="#instance-form-edit">
-                            {% csrf_token %}
-                            {{form|crispy}}
-                            <button type="button" onClick="closeModal()" class="btn btn-secondary">Close</button>
-                            <button id="edit-instance" class="btn btn-info" hx-post={% url 'edit-instance' pk=exercise.pk %} hx-target="#modal" hx-trigger="click">
-                                Submit
+                    <div class="modal-body bg-info">  
+                        <div class="row">
+                            <button class="btn btn-primary my-2 my-3" type="button" hx-target="#set-form" hx-get={% url 'add-set' pk=exercise.pk %} hx-swap="afterend">
+                                Add Set
                             </button>
-                        </form>
- 
-                        <button class="btn btn-primary my-2 my-3" type="button" hx-target="#set-form" hx-get={% url 'add-set' pk=exercise.pk %} hx-swap="afterend">
-                            Add Set
-                        </button>
-                        <div id="set-form"></div>
-                        
+                        </div>  
+                        <div class="row">
+                            <div class="col">
+                                <form method="post" id="#instance-form-edit">
+                                    {% csrf_token %}
+                                    {{form|crispy}}
+                                    <button type="button" onClick="closeModal()" class="btn btn-secondary">Close</button>
+                                    <button id="edit-instance" class="btn btn-info" hx-post={% url 'edit-instance' pk=exercise.pk %} hx-target="#modal" hx-trigger="click">
+                                        Submit
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col">
+                                <div id="set-form"></div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>      
         </div>

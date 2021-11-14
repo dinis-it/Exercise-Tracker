@@ -1,0 +1,50 @@
+        {% for workout in workouts %}
+            <div class="list-group p-0">
+                <div id="workout{{workout.id}}" class="list-group-item m-0 bg-info p-0 rounded border-bottom border-dark border-3 mb-2 " aria-current="true">
+                <div class="w-100 border-bottom border-dark p-1">
+                    <div class=" d-flex align-items-center justify-content-between ms-0 mb-0 py-2 w-100" >
+                        <a class="h2 fw-bold ps-2 text-white text-decoration-none" href="{{workout.get_absolute_url}}">Workout: {{workout}}</a>
+                        <i class="bi bi-x-square-fill red-icon-big  me-3" hx-post={% url 'delete-instance' pk=workout.pk %} hx-confirm="Are you sure you want to delete thise workout?" hx-target="#workout{{workout.id}}" hx-swap="outerHTML"></i>
+                    </div>
+                </div>
+                {% for exercise in workout.exercises.all %}
+                    <div class="exercises d-flex align-items-center w-100 row border-bottom border-dark mt-0 ms-0">
+                        <div class="col-6">
+                            <div class="row d-flex align-items-center">
+                                <h3 class="col mb-0 fw-bold"><strong>{{exercise.exercise}}</strong></h3>
+                                <div class="col">
+                                    <div class="row py-1">   
+                                        {% if exercise.weight %}
+                                            <h5 class=""><strong>Weight:</strong> <span class="text-white">{{ exercise.weight }}</span></h5>
+                                        {% endif %}
+                                    </div>
+                                    <div class="row">   
+                                        {% if exercise.duration %}
+                                            <h5 class=""><strong>Duration:</strong> <span class="text-white">{{ exercise.duration }}</span></h5>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="row py-1">   
+                                <p class="h5"><strong>Sets:</strong> <span class="text-white">{{ exercise.format_sets }}</span></p>
+                            </div>
+                            <div class="row">   
+                                <p class="h5"><strong>Comments:</strong> <span class="text-white">{{ exercise.comments }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row py-3 d-flex w-100 align-items-center justify-content-start ms-0">
+                    <h4 class=""><strong> <Comments:lorem30></Comments:lorem30></strong></h4>
+                    <h5 class="text-white">{{workout.comment}} butty butt butts butting butted butts </h5>
+                </div>
+                <div class="row">
+                    <h3 class="col ps-4 fw-bold">Total sets: {{workout.get_total_sets}}</h3>
+                    <h3 class="col fw-bold">Total volume: {{workout.get_total_volume}} kg</h3>
+                </div>
+            </div>
+        </div>
+    {% endfor %}

@@ -7,12 +7,12 @@
     <div id="modalCreate" class="modal fade show" data-backdrop="false" tabindex="-1" style="display:block;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header"> 
-                    <h5 class="modal-title" id="modalBasicLabel"></h5>
-                        <button type="button" class="btn btn-close" onClick="closeModal()" aria-label="Close"></button>
+                <div class="modal-header bg-primary ps-3"> 
+                    <h3 class="modal-title fw-bold text-white" id="modalBasicLabel">Add exercise</h3>
+                    <i class="bi bi-x-square-fill red-icon-big me-3 pb-0" type="button" onClick="closeModal()" aria-label="Close"></i>
                 </div>
 
-                <div class="modal-body">    
+                <div class="modal-body bg-info">    
 
                     <form method="POST" id="#instance-form" hx-post={% url 'add-instance' pk=workout.pk %} hx-target="#modal">
                         {% csrf_token %}
@@ -22,10 +22,9 @@
                             Submit
                         </button>
                     </form>
+                    <div id="set-form"></div>
 
                 </div>
-
-
             </div>
         </div>      
     </div>

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 
-from workouts.forms import InstanceForm, SetForm
+from workouts.forms import DateTimeForm, InstanceForm, SetForm
 from workouts.forms import ExerciseForm, TypeForm, WorkoutForm, TagForm
 from workouts.models import (
     Exercise,
@@ -18,6 +18,28 @@ from workouts.models import (
 )
 from users.models import BaseUser
 # Create your views here.
+
+
+@login_required()
+def input_swap(request):
+    if request.method == 'POST':
+        if request.choice.value == 'type':
+            return render(request, 'workouts/partials/input_text.html')
+        else:
+            return render(request, 'workouts/partials/input_date')
+
+
+@login_required
+def search_test(request):
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        print('search', search)
+        workouts = Workout.objects.filter(types__name__icontains=search)
+        print(workouts)
+        context = {
+            'workouts': workouts
+        }
+        return render(request, 'workouts/partials/workout_list.html', context)
 
 
 @login_required
@@ -33,11 +55,39 @@ def add_set(request, pk):
             set.save()
             context = {'exercise': exercise,
                        'workout': exercise.workout}
-            return render(request, "workouts/partials/render.html", context)
+            return render(request, "workouts/partials/edit_instance.html", context)
     form = SetForm()
     context = {'form': form,
                'exercise': exercise, }
     return render(request, 'workouts/partials/add_set.html', context)
+
+
+@login_required
+def edit_set(request, pk):
+    set = get_object_or_404(Set, pk=pk)
+    if request.method == 'POST':
+        form = SetForm(request.POST)
+        print(request.POST)
+        if form.is_valid():
+            print("I'm valid")
+            set.save()
+            context = {
+                'set': set,
+                'exercise': set.instance,
+            }
+            return render(request, "workouts/partials/render.html", context)
+    form = SetForm()
+    context = {'form': form,
+               'set': set, }
+    return render(request, 'workouts/partials/edit_set.html', context)
+
+
+@login_required
+def delete_set(request, pk):
+    if request.method == "DELETE":
+        set = get_object_or_404(Set, pk=pk)
+        set.delete()
+        return HttpResponse('')
 
 
 @login_required
@@ -46,10 +96,7 @@ def add_instance(request, pk):
 
     if request.method == 'POST':
         form = InstanceForm(request.POST)
-        print("POST")
-        print(request.POST)
         if form.is_valid():
-            print("I'm valid")
             instance = form.save(commit=False)
             instance.workout = workout
             instance.save()
@@ -74,34 +121,24 @@ def edit_instance(request, pk):
     if request.method == "POST":
         form = InstanceForm(request.POST)
         if form.is_valid():
-            print("I'm valid")
             exercise = form.save(commit=False)
             exercise.id = instance.id
             exercise.workout_id = instance.workout_id
             exercise.save()
-            context = {'exercise': instance,
+            context = {'form': form,
+                       'exercise': instance,
                        'workout': instance.workout}
             return render(request, "workouts/partials/render.html", context)
         else:
-            print("hi")
             form = InstanceForm(instance=instance)
             context = {'form': form,
                        'exercise': instance,
                        'workout': instance.workout}
             return render(request, 'workouts/partials/edit_instance.html', context)
-    print("hey")
     context = {'form': form,
                'exercise': instance,
                'workout': instance.workout}
     return render(request, 'workouts/partials/edit_instance.html', context)
-
-
-@login_required
-def delete_set(request, pk):
-    if request.method == "DELETE":
-        set = get_object_or_404(Set, pk=pk)
-        set.delete()
-        return HttpResponse('')
 
 
 @login_required
@@ -124,13 +161,55 @@ def render_list(request, pk):
 
 
 @login_required
+def delete_workout(request, pk):
+    if request.method == "delete":
+        workout = get_object_or_404(Workout, pk=pk)
+        workout.delete()
+        return HttpResponse("")
+
+
+@login_required
 def detail_workout(request, pk):
     user = request.user
+    if request.method == "POST":
+        workout = Workout.objects.create()
+        workout.user = user
+        workout.save()
+        context = {'user': user,
+                   'workout': workout}
+        return render(request, 'workouts/detail_workout.html', context)
+
     workout = get_object_or_404(Workout, pk=pk)
     context = {'user': user,
                'workout': workout}
 
     return render(request, 'workouts/detail_workout.html', context)
+
+
+def workouts(request):
+    user = request.user
+    if request.method == "POST":
+        workout = Workout.objects.create(user=user)
+        user.workouts.add(workout)
+        context = {'user': user,
+                   'workout': workout}
+        return redirect('detail-workout', pk=workout.pk)
+
+    workouts = get_list_or_404(Workout, user=user)
+    exercises = get_list_or_404(Exercise)
+    types = get_list_or_404(WorkoutType)
+    tags = get_list_or_404(Tag)
+    form = DateTimeForm()
+    context = {'user': user,
+               'workouts': workouts,
+               'exercises': exercises,
+               'types': types,
+               'tags': tags,
+               'form': form
+               }
+    return render(request, 'workouts/workouts.html', context)
+
+ # Class-based views suck
 
 
 class Workouts(LoginRequiredMixin, ListView):

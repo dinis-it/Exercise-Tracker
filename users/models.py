@@ -29,3 +29,11 @@ class Profile(models.Model):
         return f"{self.user}'s Profile"
 
 
+class Weight(models.Model):
+    user = models.ForeignKey(
+        BaseUser, on_delete=models.CASCADE, related_name='weights')
+    value = models.PositiveSmallIntegerField(null=False, blank=False)
+    date = models.DateField(auto_now_add=False)
+
+    def __str__(self):
+        return self.value

@@ -4,8 +4,9 @@
 {% block content %}
 {% load django_htmx %}
 {% django_htmx_script %}
-<div class="container mb-2">
-    <button class="btn btn-primary my-2 my-3" type="button" hx-target="#instance-form" hx-get={% url 'add-instance' pk=workout.pk %}>
+
+<div class="container mb-2 bg-primary h-100">
+    <button class="btn btn-secondary rounded my-2 my-3" type="button" hx-target="#instance-form" hx-get={% url 'add-instance' pk=workout.pk %}>
         Add Exercise
     </button>
 

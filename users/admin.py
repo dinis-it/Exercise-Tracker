@@ -4,4 +4,4 @@ from .models import *
 # Register your models here.
 admin.site.register(BaseUser, UserAdmin)
 admin.site.register(Profile)
-
+admin.site.register(Weight)
