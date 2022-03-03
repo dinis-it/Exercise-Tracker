@@ -1,45 +1,56 @@
 {% if exercises %}
-    <div class="list-group">
-        {% for exercise in exercises %}
-            <div id="exercises-edit" class="list-group-item d-flex align-items-center w-100 row border-bottom border-dark border-3 bg-info py-0 ms-0">
-                <div class="col d-flex align-items-center justify-content-between">
-                    <div class="col">
-                        <div class="row d-flex justify-content-between">
-                            <div class="col">
-                                <h5 id="exercise" class="h5 col mb-0"><strong>{{exercise.exercise}}</strong></h5>
-                            </div>
-
-                        </div>
+    <table class="table table-bordered table-striped table-hover pb-2">
+        <thead>
+            <tr>
+                <th colspan="6" class="">
+                    <div class="d-flex justify-content-between">
+                        {{workout}}
+                        <a hx-post="" hx-target="#instance-form"><i class="fas fa-edit"></i></a>  
                     </div>
-                    <div class="col">
-                        <div class="row">
-                            <div class="col">
-                                <h5 class="h5"><strong>Weight:</strong> <span id="weight" class="text-white">{% if exercise.weight %}{{ exercise.weight }} kg{% endif %}</span></h5>
-                            </div>
-
+                </th>
+            </tr>
+            <tr>
+                <th colspan="2">Exercise</th>
+                <th>Duration</th>
+                <th>Weight</th>
+                <th>Sets</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            {% for exercise in exercises %}
+                <tr id="exercise{{exercise.pk}}" >
+                    <td colspan="2">{{exercise.exercise}}</td>
+                    <td>{{exercise.get_duration}}</td>
+                    <td>{{exercise.get_weight}}</td>
+                    <td>{{exercise.get_sets}}</td>
+                    <td class="row m-0">
+                        <div class="col-9 p-0">
+                            {{exercise.get_comments}}
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <h5 class="h5"><strong>Duration:</strong> <span id="duration" class="text-white">{% if exercise.duration %}{{ exercise.duration }} min{% endif %}</span></h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="row"> 
-                        <div class="col">  
-                            <p class="h5"><strong>Sets:</strong> <span id="sets" class="text-white">{{ exercise.format_sets }}</span></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <p class="h5"><strong>Comments:</strong> <span id="comments" class="text-white">{{ exercise.comments }}</span></p>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-primary" hx-get={% url 'edit-instance' pk=exercise.pk%} hx-target="#instance-form">Edit</button>
-            </div>
-        {% endfor %}
-    </div>
+                       <div class="col-3 p-0 d-flex justify-content-around">
+                            <a hx-get={% url 'edit-instance' exercise.pk %} hx-post={% url 'edit-instance' exercise.pk %} hx-target="#instance-form"><i class="fas fa-edit"></i></a>
+                            <a hx-confirm="Are you sure you want to delete this exercise?" hx-delete={% url 'delete-instance' exercise.pk %}><i class="fas fa-trash-alt" hx-target="exercise{{exercise.pk}}" hx-swap="outerHTML"></i></a>
+                        </div> 
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            {% if workout.has_exercises %}
+            <tr>
+                <th>Total volume</th>
+                <td></td>
+                <th>Total duration</th>
+                <td></td>
+                <th>Total sets</th>
+                <td></td>
+            </tr>
+            {% else %}
+                <tr></tr>
+            {% endif %}
+        </tfoot>
+    </table>
 {% endif %}
 
-
+{% comment %} <i class="fas fa-plus"></i> {% endcomment %}

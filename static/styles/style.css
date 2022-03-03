@@ -1,0 +1,31 @@
+.a{
+    text-decoration: none;
+}
+.a:hover{
+    text-decoration: underline;
+}
+
+.a:visited{
+    color:black;
+}
+
+.a:active{
+    color:black;
+}
+
+table {
+    table-layout: fixed;
+}
+
+.container{
+    min-height: 1vh;
+}
+
+.fa-trash-alt{
+    color:darkred;
+    cursor:pointer;
+}
+
+.fa-edit{
+    cursor:pointer;
+}

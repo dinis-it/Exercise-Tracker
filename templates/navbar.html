@@ -1,18 +1,13 @@
 <div class="container p-0">
-    <nav class="navbar-nav navbar-dark bg-dark navbar-expand">
+    <nav class="bg-dark navbar-nav navbar-expand">
         <ul class="nav nav-justified ">
             <li class="nav-item ">
-                <a href="{% url 'home' %}" class="nav-link navbar-dark ">Home</a>
-            </li>
-            <li class="nav-item">
-                    <a class="nav-link" href="{% url 'workouts' %}" role="button" id="Workouts" >
-                        Workouts
-                    </a>
+                <a href="{% url 'workouts' %}" class="nav-link navbar-dark ">Workouts</a>
             </li>
             <li class="nav-item">
                 <div class="dropdown show">
                     <a class="dropdown-toggle nav-link" href="#" role="button" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Profile
+                        User
                     </a>
 
                     <div class="dropdown-menu w-100" aria-labelledby="dropdownProfile">

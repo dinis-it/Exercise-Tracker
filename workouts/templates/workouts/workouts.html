@@ -4,54 +4,64 @@ User Workouts
 {% endblock title %}
 {% block content %}
 
-<div class="container flex-center bg-primary">
+<div class="container flex-center min-vh-100 pb-2">
 
-    <form>
-        <input type="text" id="input" class="form-control" name='search' hx-trigger="keyup, delay:500ms" hx-swap="innerHTML" hx-target="#search-list" hx-post={% url 'search-workout' %}>
-    </form>
+    <div class="d-flex align-items-center justify-content-start">
 
-    <form method="post">
-    {% csrf_token %}
-        <button class="btn btn-primary my-2 border rounded" type="submit">New Workout</button>
-    </form>
-
-    <div id="search-list"></div>
-    
-    <br>
-    <br>
-    <br>
-    {% comment %} {% include 'workouts/partials/workout_list.html' %} {% endcomment %}
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <div style="background:red;">
-        <form action="">
-            {{form.as_p}}
+        <form class="me-2">
+            <input type="text" id="workout-input" class="form-control w-100" name='search_workout' placeholder="Filter workouts by type" hx-trigger="keyup, delay:500ms" hx-swap="innerHTML" hx-target="#search-list" hx-post={% url 'search-workout' %}>
         </form>
+        <form class="me-2">
+            <input type="text" id="exercise-input" class="form-control w-100" name='search_exercise' placeholder="Filter workouts by exercise" hx-trigger="keyup, delay:500ms" hx-swap="innerHTML" hx-target="#search-list" hx-post={% url 'search-exercise' %}>
+        </form>
+        <form>
+            <button class="btn btn-primary my-2 border rounded" hx-get={% url 'add-workout' %} hx-post={% url 'add-workout' %} hx-target="#modals">New Workout</button>
+        </form>
+ 
     </div>
 
+    <div id="search-list">
+        {% include 'workouts/partials/workout_list.html' %}
+    </div>
+    
+    <div class="pagination">
+            <span class="current text-decoration-none pe-1">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+        <span class="step-links">
+            {% if page_obj.has_previous %}
 
-    <h2>Types</h2>
-        {% for type in types %}
-            <p>Type: {{type}}</p>
-        {% endfor %} 
-    <h2>Exercises</h2>
-        {% for exercise in exercises %}
-            <p>Exercise: {{exercise}}</p>
-        {% endfor %} 
-    <h2>Tags</h2>
-        {% for tag in tags %}
-            <p>Tag: {{tag}}</p>
-        {% endfor %} 
+                {% if page_obj.previous_page_number != 1 %}
+                    <a class="text-decoration-none" href="?page=1">&laquo; first</a>
+                    <a class="text-decoration-none " href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% else %}
+                    <a class="text-decoration-none " href="?page=1">&laquo; first</a>
+                {% endif %}
+            {% endif %}
+
+
+            {% if page_obj.has_next %}
+                {% if page_obj.next_page_number == page_obj.paginator.num_pages %}
+                    <a class="text-decoration-none " href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% else %}
+                    <a class="text-decoration-none" href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a class="text-decoration-none" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            {% endif %}
+        </span>
+    </div>
+
+    <div id="modals"></div>
+
 
 
 </div>
 
 <style>
     .container{
-        min-height: 1vh;
+       height:auto;
     }
 </style>
+
+
 {% endblock content %}

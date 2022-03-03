@@ -1,0 +1,12 @@
+{% load crispy_forms_tags %} 
+
+<form id="type-form" method="POST">
+    {% csrf_token %}
+    {{form|crispy}}
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary" hx-get={% url 'empty-response' %} hx-target="#type-form" hx-swap="innerHTML">Cancel</button>
+        <button class="btn btn-primary" hx-post={% url 'add-type' %} hx-target="#type-form" >Confirm</button>
+    </div>
+</form>
+
+

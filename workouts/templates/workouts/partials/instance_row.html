@@ -1,0 +1,15 @@
+<tr id="exercise{{exercise.pk}}" >
+    <td colspan="2">{{exercise.exercise}}</td>
+    <td>{{exercise.get_duration}}</td>
+    <td>{{exercise.get_weight}}</td>
+    <td>{{exercise.get_sets}}</td>
+    <td class="row m-0">
+        <div class="col-9 p-0">
+            {{exercise.get_comments}}
+        </div>
+       <div class="col-3 p-0 d-flex justify-content-around">
+            <a hx-get={% url 'edit-instance' exercise.pk %} hx-post={% url 'edit-instance' exercise.pk %} hx-target="#instance-form"><i class="fas fa-edit"></i></a>
+            <a hx-confirm="Are you sure you want to delete this exercise?" hx-delete={% url 'delete-instance' exercise.pk %}><i class="fas fa-trash-alt" hx-target="exercise{{exercise.pk}}" hx-swap="outerHTML"></i></a>
+        </div> 
+    </td>
+</tr>

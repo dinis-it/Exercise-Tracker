@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--Meta-->
+    {% load static %}
+
+    <!-- Meta -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -19,25 +20,17 @@
     <!-- Bootstrap Icons-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css" integrity="sha384-7ynz3n3tAGNUYFZD3cWe5PDcE36xj85vyFkawcF6tIwxvIecqKvfwLiaFdizhPpN" crossorigin="anonymous">
 
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/f5887ed4f9.js" crossorigin="anonymous"></script>
+
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.6.0"></script>
 
     <!-- Page Title -->
-    <title>{% block title %}So fit bruh{% endblock title %}</title>
+    <title>{% block title %}Workout Tracker{% endblock title %}</title>
 
-    <!-- Temporary CSS-->
-        <style>
-            .red-icon-big{
-                color:rgb(198, 61, 34);
-                font-size:36px;
-                cursor: pointer;
-            }   
-            .red-icon-small{
-                color:rgb(240, 65, 36);
-                font-size:24px;
-                cursor: pointer;
-            }
-        </style>
+    <!-- CSS-->
+    <link rel="stylesheet" href={% static 'styles/style.css' %}>
 </head>
 <body>
     {% load crispy_forms_tags %} 

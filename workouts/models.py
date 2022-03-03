@@ -42,26 +42,49 @@ class ExerciseInstance(models.Model):
     def __str__(self):
         return f'Exercise({self.exercise}, weight={self.weight})'
 
-    def format_sets(self):
-        sets = Set.objects.filter(instance=self)
-        if not sets:
-            return ""
-        reps = sets[0]
-        if any(sets):
-            print("none")
-        if (not any(x != reps for x in sets)) and not any(sets):
-            return f'{len(sets)} x {sets[0]}'
-        else:
-            output = ""
-            for set in sets:
-                if set.repetitions == None:
-                    output += ""
-                else:
-                    output += str(set.repetitions) + " "
-            return output
+    # def format_sets(self):
+    #     sets = Set.objects.filter(instance=self)
+    #     if not sets:
+    #         return ""
+    #     reps = sets[0]
+    #     if any(sets):
+    #         print("none")
+    #     if (not any(x != reps for x in sets)) and not any(sets):
+    #         return f'{len(sets)} x {sets[0]}'
+    #     else:
+    #         output = ""
+    #         for set in sets:
+    #             if set.repetitions == None:
+    #                 output += ""
+    #             else:
+    #                 output += str(set.repetitions) + " "
+    #         return output
 
-    def has_sets(self):
-        return Set.objects.filter(instance=self)
+    def get_duration(self):
+        if self.duration:
+            return self.duration
+        return "-"
+
+    def get_weight(self):
+        if self.weight:
+            return self.weight
+        return "-"
+
+    def get_sets(self):
+        sets = len(Set.objects.filter(instance=self))
+        if not sets:
+            return "-"
+        return sets
+
+    def get_comments(self):
+        if self.comment:
+            return self.comment
+        return "-"
+
+    def repetitions(self):
+        repetitions = [
+            set.repetitions for set in Set.objects.filter(instance=self)]
+        return repetitions
 
 
 class Workout(models.Model):
@@ -80,8 +103,12 @@ class Workout(models.Model):
             name += f' - {type}'
         return name
 
-    def get_user_workouts(user):
-        workouts = Workout.filter(user=user)
+    def has_exercises(self):
+        exercises = ExerciseInstance.objects.filter(workout=self)
+        return exercises
+
+    def get_user_workouts(self):
+        workouts = Workout.filter(user=self.user)
         return workouts
 
     def get_absolute_url(self):
@@ -89,6 +116,10 @@ class Workout(models.Model):
 
     def get_date(self):
         return self.date.strftime("%d/%m/%y")
+
+    def get_total_duration(self):
+        # TODO implement logic for this
+        total_duration = 0
 
     def get_total_sets(self):
         total_sets = 0

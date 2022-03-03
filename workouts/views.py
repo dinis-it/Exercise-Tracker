@@ -1,12 +1,14 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import Paginator
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView
 
-from workouts.forms import DateTimeForm, InstanceForm, SetForm
+from workouts.forms import InstanceForm, SetForm
 from workouts.forms import ExerciseForm, TypeForm, WorkoutForm, TagForm
 from workouts.models import (
     Exercise,
@@ -20,22 +22,74 @@ from users.models import BaseUser
 # Create your views here.
 
 
-@login_required()
-def input_swap(request):
-    if request.method == 'POST':
-        if request.choice.value == 'type':
-            return render(request, 'workouts/partials/input_text.html')
+@login_required
+def add_type(request):
+    '''Handle a form for creating workout types'''
+    form = TypeForm(request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return HttpResponse('')
         else:
-            return render(request, 'workouts/partials/input_date')
+            context = {
+                'form': form
+            }
+            return render(request, 'workouts/partials/add_type.html', context)
+    context = {
+        'form': form
+    }
+    return render(request, 'workouts/partials/add_type.html', context)
 
 
 @login_required
-def search_test(request):
+def workouts(request):
+    '''Main workout page, display a searchable list of workouts'''
+    user = request.user
+    if request.method == "POST":
+        workout = Workout.objects.create(user=user)
+        user.workouts.add(workout)
+        context = {'user': user,
+                   'workout': workout}
+        return redirect('detail-workout', pk=workout.pk)
+
+    workouts = get_list_or_404(Workout, user=user)
+    paginator = Paginator(workouts, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {'user': user,
+               'workouts': workouts,
+               'page_obj': page_obj,
+               }
+    return render(request, 'workouts/workouts.html', context)
+
+
+@login_required
+def search_exercise(request):
+    '''Display a list of workouts which contain exercises matching (fully or partially) the user's search box input'''
+    # name must match, user must match
+    user = request.user
     if request.method == 'POST':
-        search = request.POST.get('search')
-        print('search', search)
+        search = request.POST.get('search_exercise')
+        if search == "":
+            workouts = get_list_or_404(Workout, user=user)
+            context = {'workouts': workouts}
+            return render(request, 'workouts/partials/workout_list.html', context)
+        else:
+            exercises = ExerciseInstance.objects.filter(
+                exercise__name__icontains=search).filter(workout__user__exact=user)
+            context = {
+                'exercises': exercises
+            }
+        return render(request, 'workouts/partials/exercise_list.html', context)
+
+
+@login_required
+def search_workout(request):
+    '''Display a list of workouts which contain types matching (fully or partially) the user's search box input'''
+    if request.method == 'POST':
+        search = request.POST.get('search_workout')
+
         workouts = Workout.objects.filter(types__name__icontains=search)
-        print(workouts)
         context = {
             'workouts': workouts
         }
@@ -47,9 +101,7 @@ def add_set(request, pk):
     exercise = get_object_or_404(ExerciseInstance, pk=pk)
     if request.method == 'POST':
         form = SetForm(request.POST)
-        print(request.POST)
         if form.is_valid():
-            print("I'm valid")
             set = form.save(commit=False)
             set.instance = exercise
             set.save()
@@ -63,19 +115,43 @@ def add_set(request, pk):
 
 
 @login_required
+def save_instance_and_add_set(request, pk):
+    ''' Save an exercise instance and return an edit form and an extra set form '''
+    workout = get_object_or_404(Workout, pk=pk)
+    if request.method == "POST":
+        form = InstanceForm(request.POST)
+        if form.is_valid():
+            instance = form.save()
+            instance.workout = workout
+            set_form = SetForm()
+            context = {
+                workout: workout,
+                form: form,
+                set_form: set_form
+            }
+            return render(request, 'workouts/partials/add_instance_set.html', context)
+        context = {
+            workout: workout,
+            form: form
+        }
+        return render(request, 'workouts/partials/add_instance.html', context)
+
+
+@login_required
 def edit_set(request, pk):
+    ''' '''
     set = get_object_or_404(Set, pk=pk)
     if request.method == 'POST':
         form = SetForm(request.POST)
-        print(request.POST)
         if form.is_valid():
-            print("I'm valid")
             set.save()
             context = {
                 'set': set,
                 'exercise': set.instance,
             }
-            return render(request, "workouts/partials/render.html", context)
+            response = HttpResponse()
+            response['HX-Trigger'] = "refreshList"
+            return response
     form = SetForm()
     context = {'form': form,
                'set': set, }
@@ -92,6 +168,7 @@ def delete_set(request, pk):
 
 @login_required
 def add_instance(request, pk):
+    '''Add a form for creating an instance of an exercise, display on the workout detail page directly'''
     workout = get_object_or_404(Workout, pk=pk)
 
     if request.method == 'POST':
@@ -100,9 +177,10 @@ def add_instance(request, pk):
             instance = form.save(commit=False)
             instance.workout = workout
             instance.save()
-            context = {'exercise': instance,
-                       'workout': instance.workout}
-            return render(request, "workouts/partials/render.html", context)
+            response = HttpResponse()
+            # HTMX event trigger for rerendering the instance list
+            response['HX-Trigger'] = "refreshList"
+            return response
         else:
             context = {'form': form,
                        'workout': workout}
@@ -115,8 +193,8 @@ def add_instance(request, pk):
 
 @login_required
 def edit_instance(request, pk):
+    '''Edit an instance and re-render exercise list'''
     instance = get_object_or_404(ExerciseInstance, pk=pk)
-
     form = InstanceForm(request.POST or None, instance=instance)
     if request.method == "POST":
         form = InstanceForm(request.POST)
@@ -128,7 +206,9 @@ def edit_instance(request, pk):
             context = {'form': form,
                        'exercise': instance,
                        'workout': instance.workout}
-            return render(request, "workouts/partials/render.html", context)
+            response = HttpResponse()
+            response['HX-Trigger'] = "refreshList"
+            return response
         else:
             form = InstanceForm(instance=instance)
             context = {'form': form,
@@ -143,74 +223,110 @@ def edit_instance(request, pk):
 
 @login_required
 def delete_instance(request, pk):
+    '''Delete an exercise instance'''
     if request.method == "DELETE":
         instance = get_object_or_404(ExerciseInstance, pk=pk)
         instance.delete()
-        return HttpResponse('')
+        response = HttpResponse()
+        response['HX-Trigger'] = "refreshList"
+        return response
 
 
 @login_required
 def render_list(request, pk):
-    # Render a list of exercises in a particular workout
+    """Render a list of exercises for a particular workout"""
     workout = get_object_or_404(Workout, pk=pk)
     exercises = workout.exercises.all()
     context = {
+        "workout": workout,
         "exercises": exercises,
     }
     return render(request, "workouts/partials/instance_list.html", context)
 
 
 @login_required
-def delete_workout(request, pk):
-    if request.method == "delete":
-        workout = get_object_or_404(Workout, pk=pk)
-        workout.delete()
-        return HttpResponse("")
+def edit_workout(request):
+    '''Display a modal for selecting workout types and adding comments'''
+    user = request.user
+    form = WorkoutForm(request.POST or None)
+    if request.method == "POST":
+        workout = Workout.objects.create(user=user)
+        form = WorkoutForm(request.POST, instance=workout)
+        if form.is_valid():
+            workout = form.save()
+            instance_form = InstanceForm()
+            context = {
+                'workout': workout,
+                'form': instance_form,
+            }
+            # Render an instance form inside the workout modal
+            return redirect(workout)
+    context = {'form': form}
+    return render(request, 'workouts/partials/edit_workout.html', context)
+
+
+@login_required
+def add_workout(request):
+    '''Display a modal with a form to handle workout creation'''
+    user = request.user
+    form = WorkoutForm(request.POST or None)
+    if request.method == "POST":
+        workout = Workout.objects.create(user=user)
+        form = WorkoutForm(request.POST, instance=workout)
+        if form.is_valid():
+            workout = form.save()
+            instance_form = InstanceForm()
+            context = {
+                'workout': workout,
+                'form': instance_form,
+            }
+            return redirect(workout)
+    context = {'form': form}
+    return render(request, 'workouts/partials/edit_workout.html', context)
 
 
 @login_required
 def detail_workout(request, pk):
+    '''Display details of a workout'''
     user = request.user
-    if request.method == "POST":
-        workout = Workout.objects.create()
-        workout.user = user
-        workout.save()
-        context = {'user': user,
-                   'workout': workout}
-        return render(request, 'workouts/detail_workout.html', context)
-
     workout = get_object_or_404(Workout, pk=pk)
-    context = {'user': user,
-               'workout': workout}
+    form = WorkoutForm(instance=workout)
+    context = {
+        'user': user,
+        'workout': workout,
+        'form': form,
+    }
 
-    return render(request, 'workouts/detail_workout.html', context)
+    response = render(request, 'workouts/detail_workout.html', context)
+    response['HX-Trigger'] = "refreshList"
+    return response
 
 
-def workouts(request):
+@login_required
+def delete_workout(request, pk):
+    '''Delete a given workout'''
     user = request.user
+    if request.method == "DELETE":
+        workout = get_object_or_404(Workout, pk=pk)
+        workout.delete()
+        workouts = get_list_or_404(Workout, user=user)
+        context = {'workouts': workouts}
+        return HttpResponse("")
+        # return render(request, 'workouts/partials/workout_list.html', context)
+
+
+def add_exercise(request):
+    '''Display a form for adding exercises to the exercise list'''
+    form = ExerciseForm(request.POST or None)
     if request.method == "POST":
-        workout = Workout.objects.create(user=user)
-        user.workouts.add(workout)
-        context = {'user': user,
-                   'workout': workout}
-        return redirect('detail-workout', pk=workout.pk)
+        if form.is_valid():
+            form.save()
+            return HttpResponse("")
+    context = {'form': form}
+    return render(request, 'workouts/partials/add_exercise.html', context)
 
-    workouts = get_list_or_404(Workout, user=user)
-    exercises = get_list_or_404(Exercise)
-    types = get_list_or_404(WorkoutType)
-    tags = get_list_or_404(Tag)
-    form = DateTimeForm()
-    context = {'user': user,
-               'workouts': workouts,
-               'exercises': exercises,
-               'types': types,
-               'tags': tags,
-               'form': form
-               }
-    return render(request, 'workouts/workouts.html', context)
 
- # Class-based views suck
-
+# Class-based views
 
 class Workouts(LoginRequiredMixin, ListView):
     template_name = 'workouts/workouts.html'
@@ -247,7 +363,7 @@ class CreateWorkout(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         workout = form.save(commit=False)
         workout.user = get_object_or_404(BaseUser, user=self.request.user)
         workout.save()
-        redirect('edit_workout')
+        redirect('detail_workout')
 
 
 class CreateType(LoginRequiredMixin, SuccessMessageMixin, CreateView):

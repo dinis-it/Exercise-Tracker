@@ -1,0 +1,41 @@
+        {% for exercise in exercises %}
+            <div class="list-group p-0">
+                <div id="workout{{exercise.workout.id}}" class="list-group-item m-0 bg-info p-0 rounded border-bottom border-dark border-3 mb-2 " aria-current="true">
+                <div class="w-100 border-bottom border-dark p-1">
+                    <div class=" d-flex align-items-center justify-content-between ms-0 mb-0 py0 w-100" >
+                        <a class="h2 fw-bold ps-2 text-white text-decoration-none" href="{{exercise.workout.get_absolute_url}}">Workout: {{exercise.workout}}</a>
+                        <i class="bi bi-x-square-fill red-icon-big  me-3" hx-delete={% url 'delete-workout' pk=exercise.workout.pk %} hx-confirm="Are you sure you want to delete this workout?" hx-target="#workout{{exercise.workout.id}}" hx-swap="outerHTML"></i>
+                    </div>
+                </div>
+                    <div class="exercises d-flex align-items-center w-100 row border-bottom border-dark mt-0 ms-0">
+                        <div class="col-6">
+                            <div class="row d-flex align-items-center">
+                                <h3 class="col mb-0 fw-bold"><strong>{{exercise.exercise}}</strong></h3>
+                                <div class="col">
+                                    <div class="row py-1">   
+                                        {% if exercise.weight %}
+                                            <h5 class=""><strong>Weight:</strong> <span class="text-white">{{ exercise.weight }}</span></h5>
+                                        {% endif %}
+                                    </div>
+                                    <div class="row">   
+                                        {% if exercise.duration %}
+                                            <h5 class=""><strong>Duration:</strong> <span class="text-white">{{ exercise.duration }}</span></h5>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="row py-1">   
+                                <p class="h5"><strong>Sets:</strong> <span class="text-white">{{ exercise.format_sets }}</span></p>
+                            </div>
+                            <div class="row">   
+                                <p class="h5"><strong>Comments:</strong> <span class="text-white">{{ exercise.comments }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+     
+            </div>
+        </div>
+    {% endfor %}

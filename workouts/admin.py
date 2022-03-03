@@ -11,9 +11,7 @@ class ExerciseInstanceInline(admin.TabularInline):
 class WorkoutAdmin(admin.ModelAdmin):
     inlines = [
         ExerciseInstanceInline,
-
     ]
-
 
 admin.site.register(Workout, WorkoutAdmin)
 admin.site.register(WorkoutType)

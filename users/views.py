@@ -1,5 +1,5 @@
 
-from django.http.response import HttpResponseRedirect, JsonResponse
+from django.http.response import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_list_or_404, redirect
 from django.urls import reverse_lazy
 
@@ -11,17 +11,39 @@ from django.contrib import messages
 from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView
+
+from django.db.models.query_utils import Q
 
 from users.forms import ProfileUpdateForm, RegistrationForm, UserUpdateForm
 from users.models import BaseUser, Weight
 from workouts.models import Workout
 
 
+def empty_response(request):
+    '''Empty response to use with htmx'''
+    return HttpResponse('')
+
+
 def get_weight_data(request):
     weights = get_list_or_404(Weight)
 
     return JsonResponse()
+
+
+class PasswordReset(PasswordResetView):
+    template_name = "users/password_reset.html"
+    email_template_name = "users/password_reset_email.html"
+    success_url = reverse_lazy('password-reset-done')
+
+
+class PasswordResetDone(PasswordResetDoneView):
+    template_name = "users/password_reset_done.html"
+
+
+class PasswordResetConfirm(PasswordResetConfirmView):
+    template_name = "users/password_reset_confirm.html"
+    success_url = reverse_lazy('login')
 
 
 class WeightChart(TemplateView):

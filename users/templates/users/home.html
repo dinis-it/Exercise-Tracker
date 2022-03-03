@@ -2,13 +2,12 @@
 {% block title %}Home{% endblock title %}
 {% block content %}
 <div class="container">
-    <h1>HOME</h1>
+    <h4 class="border-bottom border-top pt-3">Home</h4>
     {% if request.user.is_authenticated %}
-    <h2>Hi {{request.user}}</h2>
+        <h2>Hi {{request.user}}</h2>
     {% else %}
-    <a href={% url 'login' %}>Log In</a>
-    <a href={% url 'registration' %}>Sign Up</a>
-
+        <h5>Welcome to my workout tracking page.</h5>
+        <p>Please <a href={% url 'login' %}>Log In</a> or <a href={% url 'registration' %}>create an account!</a></p>
     {% endif %}
 </div>
 

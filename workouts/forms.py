@@ -16,7 +16,7 @@ class WorkoutForm(ModelForm):
 
     class Meta:
         model = Workout
-        exclude = ['user']
+        exclude = ['user', 'comments']
 
 
 class ExerciseForm(ModelForm):
@@ -52,14 +52,3 @@ class TypeForm(ModelForm):
     class Meta:
         model = WorkoutType
         fields = ['name']
-
-
-""" class TextSearchForm(Form):
-    text = forms.CharField(widget=forms.TextInput(attrs={
-        "type": text
-    }))
- """
-
-
-class DateTimeForm(Form):
-    datetime = forms.DateTimeInput()

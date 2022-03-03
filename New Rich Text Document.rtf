@@ -2,7 +2,8 @@
 
 - create container for each model list (wtf am I talking about)
 - create partial CRUD for every model (instance and sets almost done)
-- re-render relevant list when something changes (workouts:done. Missing: tags,types,
+- re-render relevant list when something changes (workouts:done. Missing: tags,types
+
 
 -no javascript except for graphs
 
@@ -17,10 +18,6 @@ Users:
         - display smaller versions of workout pane
     - PRs?
     - Goals?
-- recover account
-    - send email token
-    - validate
-    - change password
 - delete user
 
 Workout:
@@ -29,7 +26,6 @@ Workout:
     - total reps, total volume
     - add type
     - add tag
-- workout history page (pagination)
 - ditch the modals for inline?
 - search workout by type
 - search exercises by tag
@@ -55,11 +51,7 @@ Style:
 - workout
 - workout list (almost)
 
-
-
-- list triggered by post requests
-- add edit, delete to list
-
-htmx
-- use swap with target to decide where the response goes
-- point to list?
+Add workout(2 stages):
+    Pick types
+    Add exercises, sets reps
+    delete workout if cancelled
